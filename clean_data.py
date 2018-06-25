@@ -17,7 +17,9 @@ def read_text(filename):
     # for each line, tokenize words
     for line in filename:
         for field in line:
-            text.append(field)
+            stripped = field.strip('\"')
+            if not (stripped.startswith('@') or stripped.startswith('RT')):
+                text.append(field)
     print(text)
     return text
 
