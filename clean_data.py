@@ -1,6 +1,7 @@
 import os
 import glob
 import csv
+import regex as re
 
 from nltk.tokenize import RegexpTokenizer, word_tokenize
 
@@ -9,13 +10,37 @@ csv.field_size_limit(999999999)
 
 path = os.getcwd()
 
+# define data file and file extension
 data_path = os.path.abspath(os.path.join(os.getcwd(), '../../Data/Twitter-Data/Clean'))
 extension = 'csv'
 
+# load all brand names from file
+brands = open(path + "/Config/brands.txt").read().splitlines()
+models = open(path + "/Config/models.txt").read().splitlines()
+
+
+# replace all brand names with BRAND
+# added spaces before and after | & BRAND to deal with partial matches
+def replace_brand(sentence):
+    brand_regex = re.compile('|'.join(map(re.escape, brands)))
+    brand = brand_regex.sub(" BRAND ", sentence)
+    return brand
+
+
+# replace all model names with MODEL
+# added spaces before and after | & MODEL to deal with partial matches
+def replace_model(sentence):
+    model_regex = re.compile('|'.join(map(re.escape, models)))
+    model = model_regex.sub(" MODEL ", sentence)
+    return model
+
 
 def pre_process(sentence):
-    sentence = sentence.lower()
+    # define tokenizer
     tokenizer = RegexpTokenizer(r'\w+')
+    sentence = sentence.lower()
+    sentence = replace_brand(sentence)
+    sentence = replace_model(sentence)
     tokens = tokenizer.tokenize(sentence)
     return word_tokenize(" ".join(tokens))
 
