@@ -19,7 +19,18 @@ brands = open(path + "/Config/brands.txt").read().splitlines()
 models = open(path + "/Config/models.txt").read().splitlines()
 
 
-# add hash-tag values to filter list
+def parse_models(models):
+    acronyms = []
+    clean_models = []
+    for model in models:
+        acronyms.append(model) if len(model) <= 3 else clean_models.append(model)
+    return acronyms, clean_models
+
+
+acronyms, models = parse_models(models)
+
+
+# add hash words to filter to lists
 def add_hash(tags):
     temp = []
     for item in tags:
@@ -31,6 +42,7 @@ def add_hash(tags):
 
 brands = add_hash(brands)
 models = add_hash(models)
+acronyms = add_hash(acronyms)
 
 
 # replace all brand names with BRAND
@@ -46,6 +58,8 @@ def replace_brand(sentence):
 def replace_model(sentence):
     model_regex = re.compile('|'.join(map(re.escape, models)))
     model = model_regex.sub(" MODEL ", sentence)
+    acronym_regex = re.compile(' | '.join(map(re.escape, acronyms)))
+    model = acronym_regex.sub(" MODEL ", model)
     return model
 
 
