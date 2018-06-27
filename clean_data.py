@@ -19,6 +19,20 @@ brands = open(path + "/Config/brands.txt").read().splitlines()
 models = open(path + "/Config/models.txt").read().splitlines()
 
 
+# add hash-tag values to filter list
+def add_hash(tags):
+    temp = []
+    for item in tags:
+        temp.append(item)
+        tag = '#' + item
+        temp.append(tag)
+    return temp
+
+
+brands = add_hash(brands)
+models = add_hash(models)
+
+
 # replace all brand names with BRAND
 # added spaces before and after | & BRAND to deal with partial matches
 def replace_brand(sentence):
