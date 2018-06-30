@@ -73,6 +73,7 @@ def pre_process(sentence):
     tokens = tokenizer.tokenize(sentence)
     return word_tokenize(" ".join(tokens))
 
+
 # tokenize each file
 def tokenize_text(filename):
     # tokens is a list type
