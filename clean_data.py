@@ -63,6 +63,7 @@ def replace_model(sentence):
     return model
 
 
+# applies filter function to sentences
 def pre_process(sentence):
     # define tokenizer
     tokenizer = RegexpTokenizer(r'\w+')
@@ -72,7 +73,7 @@ def pre_process(sentence):
     tokens = tokenizer.tokenize(sentence)
     return word_tokenize(" ".join(tokens))
 
-
+# tokenize each file
 def tokenize_text(filename):
     # tokens is a list type
     tokens = []
@@ -87,8 +88,8 @@ def tokenize_text(filename):
     return tokens
 
 
-# Open all files in Direction with extension
-def open_dir(path, extension):
+# Open all files in Direction with extension and tokenize
+def tokenize_dir(path, extension):
     tokens = []
     os.chdir(path)
     files = [i for i in glob.glob('*.{}'.format(extension))]
@@ -96,9 +97,4 @@ def open_dir(path, extension):
         print("Tokenizing {}.".format(file))
         f = csv.reader(open(file, 'rU', encoding='latin-1'), delimiter="\n", quotechar='|')
         tokens += tokenize_text(f)
-    return corpus
-
-
-corpus = open_dir(data_path, 'csv')
-
-print(corpus)
+    return tokens
