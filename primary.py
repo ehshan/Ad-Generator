@@ -2,6 +2,7 @@ import os
 import time
 
 from clean_data import tokenize_dir
+from embed_words import train_word_model
 
 # working directory
 path = os.getcwd()
@@ -22,4 +23,11 @@ print('Start-Time: ', time.ctime(time.time()))
 corpus = tokenize_dir(data_path, extension)
 print('End-Time: ', time.ctime(time.time()))
 
-print(corpus)
+print('\nTRAINING CORPUS: \n' + corpus)
+
+
+# GENERATE EMBEDDINGS
+# ---------------
+
+# train and save the embedding model
+word_model = train_word_model(corpus, 'word_model')
