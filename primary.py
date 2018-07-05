@@ -1,5 +1,6 @@
 import os
 import time
+import numpy as np
 
 from clean_data import tokenize_dir, clean_tokens
 from embed_words import train_word_model
@@ -36,10 +37,23 @@ print('Num sentences for model:', len(sentences))
 # GENERATE EMBEDDINGS
 # ---------------
 
+print('\nCreating word embeddings...')
 # train and save the embedding model
 word_model = train_word_model(corpus, 'word_model')
 
 # get the initial model weight
-pretrained_weights = word_model.wv.syn0
+embed_weights = word_model.wv.syn0
 # get the vocab size and embedding shape for model
-vocab_size, embedding_size = pretrained_weights.shape
+vocab_size, embedding_size = embed_weights.shape
+
+
+# VECTORIZE WORDS
+# ----------------
+
+print('\nVectorizing words...')
+# define the shape of input & output matrices
+# input shape (no sentences, max-sentence-size)
+train_input = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
+
+# output shape (no sentences)
+train_output = np.zeros([len(sentences)], dtype=np.int32)
