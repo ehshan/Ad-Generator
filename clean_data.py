@@ -99,3 +99,17 @@ def tokenize_dir(path, extension):
         f = csv.reader(open(file, 'rU', encoding='latin-1'), delimiter="\n", quotechar='|')
         tokens += tokenize_text(f)
     return tokens
+
+
+# clean tokens for language model
+def clean_tokens(corpus):
+    # remove empty sentences
+    raw_sentences = [x for x in corpus if x != []]
+
+    # remove sentences with more than 20 words
+    sentences = [x for x in raw_sentences if len(x) <= 20]
+
+    # get the longest sentence in corpus for NN input vector
+    max_sentence = max(sentences, key=len)
+    max_sentence_len = len(max(sentences, key=len))
+    return sentences, max_sentence, max_sentence_len
