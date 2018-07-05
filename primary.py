@@ -1,7 +1,7 @@
 import os
 import time
 
-from clean_data import tokenize_dir
+from clean_data import tokenize_dir, clean_tokens
 from embed_words import train_word_model
 
 # working directory
@@ -23,8 +23,15 @@ print('Start-Time: ', time.ctime(time.time()))
 corpus = tokenize_dir(data_path, extension)
 print('End-Time: ', time.ctime(time.time()))
 
-print('\nTRAINING CORPUS: \n' + corpus)
+# clean tokenize corpus
+sentences, max_sentence, max_sentence_len = clean_tokens(corpus)
 
+print("max: %d " % max_sentence_len)
+
+print('Num sentences in original corpus:', len(corpus))
+print('Num sentences for model:', len(sentences))
+
+# print('\nTRAINING CORPUS: \n' + corpus)
 
 # GENERATE EMBEDDINGS
 # ---------------
