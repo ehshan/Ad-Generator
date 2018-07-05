@@ -38,3 +38,8 @@ print('Num sentences for model:', len(sentences))
 
 # train and save the embedding model
 word_model = train_word_model(corpus, 'word_model')
+
+# get the initial model weight
+pretrained_weights = word_model.wv.syn0
+# get the vocab size and embedding shape for model
+vocab_size, embedding_size = pretrained_weights.shape
