@@ -3,7 +3,7 @@ import time
 import numpy as np
 
 from clean_data import tokenize_dir, clean_tokens
-from embed_words import train_word_model, dictionary_lookups
+from embed_words import train_word_model, dictionary_lookups, vectorize_words
 
 # working directory
 path = os.getcwd()
@@ -50,7 +50,6 @@ vocab_size, embedding_size = embed_weights.shape
 # get the dictionary lookup functions
 word_to_index, index_to_word = dictionary_lookups(word_model)
 
-
 # VECTORIZE WORDS
 # ----------------
 
@@ -61,3 +60,6 @@ train_input = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
 
 # output shape (no sentences)
 train_output = np.zeros([len(sentences)], dtype=np.int32)
+
+# populate model vectors with word embedding data
+train_input, train_output = vectorize_words(sentences, train_input, train_output, index_to_word)
