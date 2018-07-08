@@ -58,3 +58,18 @@ def dictionary_lookups(model):
             return model.wv.index2word[index]
 
     return word_index, index_to_word
+
+
+# populate model vectors with word embedding data
+def vectorize_words(sentences, train_input, train_output, word_to_index):
+    print('Start-Time: ', time.ctime(time.time()))
+    # populate vectors
+    for i, sentence in enumerate(sentences):
+        # print(" ".join(sentence))
+        for t, word in enumerate(sentence[:-1]):
+            # print("Word: " + word)
+            train_input[i, t] = word_to_index(word)
+        # print("Out", sentence[-1])
+        train_output[i] = word_to_index(sentence[-1])
+    print('End-Time: ', time.ctime(time.time()))
+    return train_input, train_output
