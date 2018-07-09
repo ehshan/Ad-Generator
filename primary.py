@@ -69,7 +69,6 @@ train_input, train_output = vectorize_words(sentences, train_input, train_output
 print('\ntrain_input shape:', train_input.shape)
 print('train_output shape:', train_output.shape)
 
-
 # MODEL SETUP
 # ------------------
 print('\nConstructing Model...')
@@ -80,3 +79,9 @@ model_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights
 model_lstm = LSTM(units=embedding_size, return_sequences=True, return_state=False)
 model_dense = Dense(units=vocab_size)
 model_activation = Activation('softmax')
+
+# Connect layers
+embedded = model_embed(model_input)
+lstm_1_output = model_lstm(embedded)
+dense_output = model_dense(lstm_1_output)
+model_output = model_activation(dense_output)
