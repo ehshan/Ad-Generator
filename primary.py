@@ -2,6 +2,8 @@ import os
 import time
 import numpy as np
 
+from keras.layers import Dense, Activation, Input, LSTM, Embedding
+
 from clean_data import tokenize_dir, clean_tokens
 from embed_words import train_word_model, dictionary_lookups, vectorize_words
 
@@ -66,3 +68,15 @@ train_input, train_output = vectorize_words(sentences, train_input, train_output
 
 print('\ntrain_input shape:', train_input.shape)
 print('train_output shape:', train_output.shape)
+
+
+# MODEL SETUP
+# ------------------
+print('\nConstructing Model...')
+
+# define the model layers
+model_input = Input(shape=(None,))
+model_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights])
+model_lstm = LSTM(units=embedding_size, return_sequences=True, return_state=False)
+model_dense = Dense(units=vocab_size)
+model_activation = Activation('softmax')
