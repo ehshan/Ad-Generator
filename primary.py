@@ -2,6 +2,7 @@ import os
 import time
 import numpy as np
 
+from keras.models import Sequential
 from keras.layers import Dense, Activation, Input, LSTM, Embedding
 
 from clean_data import tokenize_dir, clean_tokens
@@ -82,6 +83,9 @@ model_activation = Activation('softmax')
 
 # Connect layers
 embedded = model_embed(model_input)
-lstm_1_output = model_lstm(embedded)
-dense_output = model_dense(lstm_1_output)
+lstm_output = model_lstm(embedded)
+dense_output = model_dense(lstm_output)
 model_output = model_activation(dense_output)
+
+# Define the model
+primary_model = Sequential(model_input, model_output)
