@@ -4,6 +4,7 @@ import numpy as np
 
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Input, LSTM, Embedding
+from keras.optimizers import RMSprop
 
 from clean_data import tokenize_dir, clean_tokens
 from embed_words import train_word_model, dictionary_lookups, vectorize_words
@@ -89,3 +90,6 @@ model_output = model_activation(dense_output)
 
 # Define the model
 primary_model = Sequential(model_input, model_output)
+
+# Define optimizer
+rms_prop = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
