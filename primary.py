@@ -93,3 +93,12 @@ primary_model = Sequential(model_input, model_output)
 
 # Define optimizer
 rms_prop = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
+
+# Compile model
+primary_model.compile(
+    optimizer=rms_prop,
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy'])
+
+# print summary of model layers
+print(primary_model.summary())
