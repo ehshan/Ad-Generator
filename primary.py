@@ -103,7 +103,6 @@ primary_model.compile(
 # print summary of model layers
 print(primary_model.summary())
 
-
 # TRAINING SETUP
 # --------------
 print("\nVocab size: %d" % vocab_size)
@@ -114,3 +113,18 @@ epochs = 50
 validation_split = 0.2
 print("\nTraining in batches of: %d" % batch_size)
 print("Training epochs: %d" % epochs)
+
+# TRAIN MODEL
+# -----------
+print('\nTraining Start-Time: ', time.ctime(time.time()))
+
+hist = primary_model.fit(train_input,
+                         train_output,
+                         batch_size=batch_size,
+                         verbose=1,
+                         shuffle='batch',
+                         epochs=epochs,
+                         validation_split=validation_split)
+
+print("\nAll done!")
+print('\nFinish Time: ', time.ctime(time.time()))
