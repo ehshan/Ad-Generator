@@ -2,6 +2,7 @@ import os
 import time
 import numpy as np
 
+import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Input, LSTM, Embedding
 from keras.optimizers import RMSprop
@@ -94,11 +95,24 @@ primary_model = Sequential(model_input, model_output)
 # Define optimizer
 rms_prop = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
 
+
+# Define custom evaluation metrics
+def perplexity(y_true, y_pred):
+    cross_entropy = K.sparse_categorical_crossentropy(y_true, y_pred)
+    perplexity = K.pow(2.0, cross_entropy)
+    # perplexity = 2 ** cross_entropy
+    return perplexity
+
+
+def crossentropy(y_true, y_pred):
+    return K.sparse_categorical_crossentropy(y_true, y_pred)
+
+
 # Compile model
 primary_model.compile(
     optimizer=rms_prop,
     loss='sparse_categorical_crossentropy',
-    metrics=['accuracy'])
+    metrics=['accuracy', crossentropy, perplexity])
 
 # print summary of model layers
 print(primary_model.summary())
