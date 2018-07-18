@@ -128,6 +128,11 @@ validation_split = 0.2
 print("\nTraining in batches of: %d" % batch_size)
 print("Training epochs: %d" % epochs)
 
+# start point for generated text
+start_words = ['the', 'there', 'from', 'have', 'can',
+               'engine', 'body', 'speed', 'elegance', 'safety',
+               'fun', 'love', 'excite', 'joy', 'curious', ]
+
 
 # generate sentence one word at a time - limiting to 10 words
 def generate_next_word(text, sentence_length=10):
@@ -139,6 +144,13 @@ def generate_next_word(text, sentence_length=10):
         index = np.argmax(prediction[-1])
         word_indices.append(index)
     return ' '.join(index_to_word(index) for index in word_indices)
+
+
+def on_epoch_end(epoch, _):
+    print('\nEpoch no: %d' % epoch)
+    for text in start_words:
+        sentence = generate_next_word(text)
+        print('Start word %s: \n  Sentence: %s' % (text, sentence))
 
 
 # TRAIN MODEL
