@@ -6,6 +6,7 @@ import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Input, LSTM, Embedding
 from keras.optimizers import RMSprop
+from keras.callbacks import LambdaCallback
 
 from clean_data import tokenize_dir, clean_tokens
 from embed_words import train_word_model, dictionary_lookups, vectorize_words
@@ -157,13 +158,18 @@ def on_epoch_end(epoch, _):
 # -----------
 print('\nTraining Start-Time: ', time.ctime(time.time()))
 
+# calls function on every epoch end
+generate_callback = LambdaCallback(on_epoch_end=on_epoch_end)
+
 hist = primary_model.fit(train_input,
                          train_output,
                          batch_size=batch_size,
                          verbose=1,
                          shuffle='batch',
                          epochs=epochs,
-                         validation_split=validation_split)
+                         validation_split=validation_split,
+                         callbacks=[generate_callback])
+
 
 print("\nAll done!")
 print('\nFinish Time: ', time.ctime(time.time()))
