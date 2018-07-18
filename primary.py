@@ -18,6 +18,9 @@ path = os.getcwd()
 data_path = os.path.abspath(os.path.join(os.getcwd(), '../../Data/Twitter-Data/Clean'))
 extension = 'csv'
 
+# for saving
+version_name = 'primary_train'
+
 # START
 # ----
 
@@ -170,6 +173,13 @@ hist = primary_model.fit(train_input,
                          validation_split=validation_split,
                          callbacks=[generate_callback])
 
+print('\nTraining Finish Time: ', time.ctime(time.time()))
+
+
+# SAVE MODEL
+# -----------
+
+print("\nSaving trained model...")
+primary_model.save(path + '/Models/' + version_name + '.h5')
 
 print("\nAll done!")
-print('\nFinish Time: ', time.ctime(time.time()))
