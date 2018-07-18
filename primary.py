@@ -128,6 +128,19 @@ validation_split = 0.2
 print("\nTraining in batches of: %d" % batch_size)
 print("Training epochs: %d" % epochs)
 
+
+# generate sentence one word at a time - limiting to 10 words
+def generate_next_word(text, sentence_length=10):
+    word_indices = [word_to_index(word) for word in text.split()]
+    for n in range(sentence_length):
+        # prediction for all words in vocab
+        prediction = primary_model.predict(x=np.array(word_indices))
+        # take highest probability
+        index = np.argmax(prediction[-1])
+        word_indices.append(index)
+    return ' '.join(index_to_word(index) for index in word_indices)
+
+
 # TRAIN MODEL
 # -----------
 print('\nTraining Start-Time: ', time.ctime(time.time()))
