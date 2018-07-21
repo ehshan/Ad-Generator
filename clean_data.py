@@ -10,11 +10,8 @@ csv.field_size_limit(999999999)
 
 path = os.getcwd()
 
-# define data file and file extension
-data_path = os.path.abspath(os.path.join(os.getcwd(), '../../Data/Twitter-Data/Clean'))
-extension = 'csv'
 
-# load all brand names from file
+# load all brand and model names from file
 brands = open(path + "/Config/brands.txt").read().splitlines()
 models = open(path + "/Config/models.txt").read().splitlines()
 
@@ -81,13 +78,25 @@ def remove_special(sentence):
     return sentence
 
 
+# removes any social tags (@, #, etc) from text
+def remove_social_tags(sentence):
+    # sentence = re.sub(r'@\S*', "", sentence)
+    # # sentence = re.sub(r'\b#\w+', "", sentence)
+    sentence = re.sub(r"(@\S*|#\S*\S*)", "", sentence)
+    return sentence
+
+
 # applies filter function to sentences
 def pre_process(sentence):
     # define tokenizer
     tokenizer = RegexpTokenizer(r'\w+')
     sentence = sentence.lower()
+    # apply filtering functions
+    sentence = remove_special(sentence)
+    sentence = remove_links(sentence)
     sentence = replace_brand(sentence)
     sentence = replace_model(sentence)
+    sentence = remove_social_tags(sentence)
     tokens = tokenizer.tokenize(sentence)
     return word_tokenize(" ".join(tokens))
 
@@ -126,7 +135,6 @@ def clean_tokens(corpus):
 
     # remove sentences with more than 20 words
     sentences = [x for x in raw_sentences if len(x) <= 20]
-
     # get the longest sentence in corpus for NN input vector
     max_sentence = max(sentences, key=len)
     max_sentence_len = len(max(sentences, key=len))
