@@ -63,6 +63,15 @@ def replace_model(sentence):
     return model
 
 
+# removes any link from corpus % replaces with LINK
+def remove_links(sentence):
+    sentence = re.sub(r"http\S+", " LINK ", sentence)
+    sentence = re.sub(r"pic.twitter.com\S+", "", sentence)
+    sentence = re.sub(r"twitter\S+", "", sentence)
+    sentence = re.sub(r"com\S+", "", sentence)
+    return sentence
+
+
 # applies filter function to sentences
 def pre_process(sentence):
     # define tokenizer
