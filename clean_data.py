@@ -72,6 +72,15 @@ def remove_links(sentence):
     return sentence
 
 
+# removes all non-ascii character from text
+def remove_special(sentence):
+    # replace hyphens
+    sentence = re.sub(r'â€™', '\'', sentence)
+    # all non-ASCII characters with a single space
+    sentence = re.sub(r'[^\x00-\x7F]+', ' ', sentence)
+    return sentence
+
+
 # applies filter function to sentences
 def pre_process(sentence):
     # define tokenizer
