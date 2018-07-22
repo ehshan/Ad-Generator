@@ -138,6 +138,19 @@ start_words = ['the', 'there', 'from', 'have', 'can',
                'fun', 'love', 'excite', 'joy', 'curious', ]
 
 
+# apply temperature to each model sample
+def temp_sample(predictions, temperature=1.0):
+    # value 0 return argmax sampling
+    if temperature <= 0:
+        return np.argmax(predictions)
+    predictions = np.asarray(predictions).astype('float64')
+    predictions = np.log(predictions) / temperature
+    exp_predictions = np.exp(predictions)
+    predictions = exp_predictions / np.sum(exp_predictions)
+    probability = np.random.multinomial(1, predictions, 1)
+    return np.argmax(probability)
+
+
 # generate sentence one word at a time - limiting to 10 words
 def generate_next_word(text, sentence_length=10):
     word_indices = [word_to_index(word) for word in text.split()]
@@ -174,7 +187,6 @@ hist = primary_model.fit(train_input,
                          callbacks=[generate_callback])
 
 print('\nTraining Finish Time: ', time.ctime(time.time()))
-
 
 # SAVE MODEL
 # -----------
