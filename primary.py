@@ -1,6 +1,7 @@
 import os
 import time
 import numpy as np
+import csv
 
 import keras.backend as K
 from keras.models import Sequential
@@ -163,11 +164,13 @@ def generate_next_word(text, temp, sentence_length=10):
     return ' '.join(index_to_word(index) for index in word_indices)
 
 
+# writes prediction to file for each epoch
 def on_epoch_end(epoch, _):
-    print('\nEpoch no: %d' % epoch)
+    # declare csv objects for both sampling styles
+    wr = csv.writer(f, dialect='excel', lineterminator='\n')
     for text in start_words:
         sentence = generate_next_word(text, 0)
-        print('Start word %s: \n  Sentence: %s' % (text, sentence))
+        wr.writerow(sentence)
 
 
 # TRAIN MODEL
@@ -177,14 +180,15 @@ print('\nTraining Start-Time: ', time.ctime(time.time()))
 # calls function on every epoch end
 generate_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 
-hist = primary_model.fit(train_input,
-                         train_output,
-                         batch_size=batch_size,
-                         verbose=1,
-                         shuffle='batch',
-                         epochs=epochs,
-                         validation_split=validation_split,
-                         callbacks=[generate_callback])
+with open(path + '/Output/' + version_name + '.csv', 'w') as f:
+    hist = primary_model.fit(train_input,
+                             train_output,
+                             batch_size=batch_size,
+                             verbose=1,
+                             shuffle='batch',
+                             epochs=epochs,
+                             validation_split=validation_split,
+                             callbacks=[generate_callback])
 
 print('\nTraining Finish Time: ', time.ctime(time.time()))
 
