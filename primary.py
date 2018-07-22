@@ -152,13 +152,13 @@ def temp_sample(predictions, temperature=1.0):
 
 
 # generate sentence one word at a time - limiting to 10 words
-def generate_next_word(text, sentence_length=10):
+def generate_next_word(text, temp, sentence_length=10):
     word_indices = [word_to_index(word) for word in text.split()]
     for n in range(sentence_length):
         # prediction for all words in vocab
         prediction = primary_model.predict(x=np.array(word_indices))
-        # take highest probability
-        index = np.argmax(prediction[-1])
+        # apply sampling parameter
+        index = temp_sample(prediction[-1], temperature=temp)
         word_indices.append(index)
     return ' '.join(index_to_word(index) for index in word_indices)
 
@@ -166,7 +166,7 @@ def generate_next_word(text, sentence_length=10):
 def on_epoch_end(epoch, _):
     print('\nEpoch no: %d' % epoch)
     for text in start_words:
-        sentence = generate_next_word(text)
+        sentence = generate_next_word(text, 0)
         print('Start word %s: \n  Sentence: %s' % (text, sentence))
 
 
