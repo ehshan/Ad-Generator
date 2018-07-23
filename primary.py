@@ -3,8 +3,9 @@ import time
 import numpy as np
 import csv
 import pickle
-
+import json
 import keras.backend as K
+
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Input, LSTM, Embedding
 from keras.optimizers import RMSprop
@@ -214,5 +215,13 @@ with open(path + '/Logs/' + version_name + '_train_history.pkl', 'wb') as file:
 
 print("\nSaving trained model...")
 primary_model.save(path + '/Models/' + version_name + '.h5')
+
+print("\nSaving model weights...")
+primary_model.save_weights(path + '/Models/Primary/' + version_name + '_weights.h5')
+
+print("\nSaving model to JSON...")
+model_json_string = primary_model.to_json()
+with open(path + '/Models/Primary/' + version_name + '.json', "w") as f_j:
+    json.dump(json.loads(model_json_string), f_j, indent=4)
 
 print("\nAll done!")
