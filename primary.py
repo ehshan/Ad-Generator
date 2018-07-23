@@ -8,7 +8,7 @@ import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Input, LSTM, Embedding
 from keras.optimizers import RMSprop
-from keras.callbacks import LambdaCallback, CSVLogger, History
+from keras.callbacks import LambdaCallback, CSVLogger, History, ModelCheckpoint
 
 from clean_data import tokenize_dir, clean_tokens
 from embed_words import train_word_model, dictionary_lookups, vectorize_words
@@ -185,6 +185,14 @@ generate_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 csv_logger = CSVLogger(path + '/Logs/' + version_name + '.log')
 
 history = History()
+
+model_check = ModelCheckpoint(path + '/Models/' + version_name + '_.{epoch:02d}.hdf5',
+                              monitor='val_perplexity',
+                              verbose=1,
+                              save_best_only=False,
+                              save_weights_only=False,
+                              mode='auto',
+                              period=1)
 
 with open(path + '/Output/' + version_name + '.csv', 'w') as f:
     hist = primary_model.fit(train_input,
