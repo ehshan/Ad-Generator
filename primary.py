@@ -2,12 +2,13 @@ import os
 import time
 import numpy as np
 import csv
+import pickle
 
 import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Input, LSTM, Embedding
 from keras.optimizers import RMSprop
-from keras.callbacks import LambdaCallback, CSVLogger
+from keras.callbacks import LambdaCallback, CSVLogger, History
 
 from clean_data import tokenize_dir, clean_tokens
 from embed_words import train_word_model, dictionary_lookups, vectorize_words
@@ -183,6 +184,8 @@ generate_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 # writes training stats to file
 csv_logger = CSVLogger(path + '/Logs/' + version_name + '.log')
 
+history = History()
+
 with open(path + '/Output/' + version_name + '.csv', 'w') as f:
     hist = primary_model.fit(train_input,
                              train_output,
@@ -191,12 +194,15 @@ with open(path + '/Output/' + version_name + '.csv', 'w') as f:
                              shuffle='batch',
                              epochs=epochs,
                              validation_split=validation_split,
-                             callbacks=[generate_callback, csv_logger])
+                             callbacks=[generate_callback, csv_logger, history])
 
 print('\nTraining Finish Time: ', time.ctime(time.time()))
 
 # SAVE MODEL
 # -----------
+
+with open(path + '/Logs/' + version_name + '_train_history.pkl', 'wb') as file:
+    pickle.dump(hist.history, file)
 
 print("\nSaving trained model...")
 primary_model.save(path + '/Models/' + version_name + '.h5')
