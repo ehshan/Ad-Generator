@@ -7,7 +7,7 @@ import json
 import keras.backend as K
 
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Input, LSTM, Embedding
+from keras.layers import Dense, Activation, Input, LSTM, Embedding, Dropout
 from keras.optimizers import RMSprop
 from keras.callbacks import LambdaCallback, CSVLogger, History, ModelCheckpoint
 
@@ -87,16 +87,20 @@ print('\nConstructing Model...')
 model_input = Input(shape=(None,))
 model_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights])
 model_lstm_1 = LSTM(units=embedding_size, return_sequences=True, return_state=False)
+model_dropout_1 = Dropout(0.2)
 model_lstm_2 = LSTM(units=embedding_size, return_sequences=False, return_state=False)
+model_dropout_2 = Dropout(0.2)
 model_dense = Dense(units=vocab_size)
 model_activation = Activation('softmax')
-
 # Connect layers
 embedded = model_embed(model_input)
 lstm_1_output = model_lstm_1(embedded)
-lstm_2_output = model_lstm_2(lstm_1_output)
-dense_output = model_dense(lstm_2_output)
+dropout_1_output = model_dropout_1(lstm_1_output)
+lstm_2_output = model_lstm_2(dropout_1_output)
+dropout_2_output = model_dropout_2(lstm_2_output)
+dense_output = model_dense(dropout_2_output)
 model_output = model_activation(dense_output)
+
 
 # Define the model
 primary_model = Sequential(model_input, model_output)
