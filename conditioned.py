@@ -1,7 +1,7 @@
 import os.path
 import time
 
-from clean_data import tokenize_dir
+from clean_data import tokenize_dir, clean_tokens
 
 # self path
 path = os.getcwd()
@@ -25,3 +25,12 @@ print('\nLoading data...')
 print('Start-Time: ', time.ctime(time.time()))
 corpus = tokenize_dir(data_path, extension)
 print('End-Time: ', time.ctime(time.time()))
+
+
+# clean tokenize corpus
+sentences, max_sentence, max_sentence_len = clean_tokens(corpus)
+
+print("max: %d " % max_sentence_len)
+
+print('Num sentences in original corpus:', len(corpus))
+print('Num sentences for model:', len(sentences))
