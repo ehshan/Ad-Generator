@@ -3,6 +3,7 @@ import time
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus
+from embed_words import train_word_model
 
 # self path
 path = os.getcwd()
@@ -37,3 +38,11 @@ print('Num sentences for model:', len(sentences))
 
 # add start and end tags to each sentence
 corpus = tag_corpus(sentences)
+
+
+# GENERATE EMBEDDINGS
+# ---------------
+
+print('\nCreating word embeddings...')
+# train and save the embedding model
+word_model = train_word_model(corpus, 'word_model')
