@@ -35,10 +35,8 @@ print("max: %d " % max_sentence_len)
 print('Num sentences in original corpus:', len(corpus))
 print('Num sentences for model:', len(sentences))
 
-
 # add start and end tags to each sentence
 corpus = tag_corpus(sentences)
-
 
 # GENERATE EMBEDDINGS
 # ---------------
@@ -46,3 +44,8 @@ corpus = tag_corpus(sentences)
 print('\nCreating word embeddings...')
 # train and save the embedding model
 word_model = train_word_model(corpus, 'word_model')
+
+# get the initial model weight
+embed_weights = word_model.wv.syn0
+# get the vocab size and embedding shape for model
+vocab_size, embedding_size = embed_weights.shape
