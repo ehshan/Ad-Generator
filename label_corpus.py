@@ -33,3 +33,17 @@ def all_tags(list, word_model):
     for word in list:
         tags.append(tag_builder(word, word_model))
     return tags
+
+
+# will check of any keyword in set are present in a sentence
+def check_keywords_present(sentence, all_keywords):
+    # convert sentence to set
+    sentence_set = set(sentence)
+    # each tag list
+    for words in all_keywords:
+        # check if tag is preset in sentence
+        # if so return true
+        if bool(sentence_set.intersection(words)):
+            return True
+    # If nothing in the keyword sets present return false
+    return False
