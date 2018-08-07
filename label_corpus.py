@@ -35,7 +35,36 @@ def all_tags(list, word_model):
     return tags
 
 
-# will check of any keyword in set are present in a sentence
+# label the corpus
+def label_corpus(sentences, keywords):
+    print("\nLabeling corpus...")
+    all_keywords = all_tags(keywords)
+    all_labels = []
+    # each sentence in the set
+
+    for sentence in sentences:
+        # create new list of labels + append the start token
+        sentence_label = ['<START>']
+        word_order = []
+        for keys in all_keywords:
+            for key in keys:
+                if key in sentence:
+                    idx = sentence.index(key)
+                    # create a list with the position and the keyword
+                    word_order.append([idx, key])
+                    # print(word_order)
+
+        ordered_labels = sorted(word_order, key=lambda x: x[0])
+        print(ordered_labels)
+        for label in ordered_labels:
+            sentence_label.append(label[1])
+        sentence_label.append('<END>')
+        print(sentence_label)
+        # append the sentences labels to all list
+        all_labels.append(sentence_label)
+    return all_labels
+
+
 def check_keywords_present(sentence, all_keywords):
     # convert sentence to set
     sentence_set = set(sentence)
@@ -47,3 +76,40 @@ def check_keywords_present(sentence, all_keywords):
             return True
     # If nothing in the keyword sets present return false
     return False
+
+
+# label the corpus
+def clean_and_label(sentences, keywords):
+    print("\nLabeling corpus...")
+    all_keywords = all_tags(keywords)
+    all_labels = []
+    keyword_corpus = []
+    # each sentence in the set
+    for sentence in sentences:
+        if bool(check_keywords_present(sentence, all_keywords)):
+            # tag the sentence and add it to the new corpus
+
+            word_order = []
+            for keys in all_keywords:
+                for key in keys:
+                    if key in sentence:
+                        idx = sentence.index(key)
+                        # create a list with the position and the keyword
+                        word_order.append([idx, key])
+                        # print(word_order)
+            if len(word_order) > 1:
+                keyword_corpus.append(sentence)
+                ordered_labels = sorted(word_order, key=lambda x: x[0])
+                # create new list of labels + append the start token
+                sentence_label = ['<START>']
+                for label in ordered_labels:
+                    sentence_label.append(label[1])
+                sentence_label.append('<END>')
+                # print(sentence_label)
+                # append the sentences labels to all list
+                all_labels.append(sentence_label)
+
+    # add start and end tags to keyword corpus
+    # keyword_corpus = tag_corpus(keyword_corpus)
+    return keyword_corpus, all_labels
+
