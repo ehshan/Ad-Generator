@@ -1,7 +1,7 @@
 import os.path
 import time
 
-from keras.layers import Input, Embedding, LSTM
+from keras.layers import Input, Embedding, LSTM, Dropout, Dense
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus
@@ -63,3 +63,14 @@ encoder_inputs = Input(shape=(None,), name='label_input')
 encoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights], trainable=False,
                           name='encoder_embedding')
 encoder_lstm = LSTM(embedding_size, return_state=True, name='encoder_lstm')
+
+
+# DECODER
+# -------
+# Define the decoder layers
+decoder_inputs = Input(shape=(None,), name='sentence_input')
+decoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights], trainable=False,
+                          name='decoder_embedding')
+decoder_lstm = LSTM(embedding_size, return_sequences=True, return_state=True, name='decoder_lstm')
+dropout = Dropout(0.2)
+decoder_dense = Dense(vocab_size, activation='softmax')
