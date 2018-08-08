@@ -1,6 +1,8 @@
 import os.path
 import time
 
+from keras.layers import Input, Embedding, LSTM
+
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus
 from embed_words import train_word_model
@@ -49,3 +51,15 @@ word_model = train_word_model(corpus, 'word_model')
 embed_weights = word_model.wv.syn0
 # get the vocab size and embedding shape for model
 vocab_size, embedding_size = embed_weights.shape
+
+
+# DEFINE MODEL LAYERS
+# ----------------------
+
+# ENCODER
+# -------
+# Define the encoder layers
+encoder_inputs = Input(shape=(None,), name='label_input')
+encoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights], trainable=False,
+                          name='encoder_embedding')
+encoder_lstm = LSTM(embedding_size, return_state=True, name='encoder_lstm')
