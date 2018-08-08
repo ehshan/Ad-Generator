@@ -52,7 +52,6 @@ embed_weights = word_model.wv.syn0
 # get the vocab size and embedding shape for model
 vocab_size, embedding_size = embed_weights.shape
 
-
 # DEFINE MODEL LAYERS
 # ----------------------
 
@@ -74,3 +73,17 @@ decoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weigh
 decoder_lstm = LSTM(embedding_size, return_sequences=True, return_state=True, name='decoder_lstm')
 dropout = Dropout(0.2)
 decoder_dense = Dense(vocab_size, activation='softmax')
+
+
+# CONNECT LAYERS
+# --------------
+# Connect the encoder layers
+encoder_embedded = encoder_embed(encoder_inputs)
+encoder_outputs, state_h, state_c = encoder_lstm(encoder_embedded)
+encoder_states = [state_h, state_c]
+
+# Connect the decoder layers
+decoder_embedded = decoder_embed(decoder_inputs)
+decoder_lstm_outputs, _, _ = decoder_lstm(decoder_embedded, initial_state=encoder_states)
+decoder_dropout = dropout(decoder_lstm_outputs)
+decoder_outputs = decoder_dense(decoder_dropout)
