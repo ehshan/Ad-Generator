@@ -1,6 +1,7 @@
 import os.path
 import time
 
+from keras.models import Sequential
 from keras.layers import Input, Embedding, LSTM, Dropout, Dense
 
 from clean_data import tokenize_dir, clean_tokens
@@ -87,3 +88,6 @@ decoder_embedded = decoder_embed(decoder_inputs)
 decoder_lstm_outputs, _, _ = decoder_lstm(decoder_embedded, initial_state=encoder_states)
 decoder_dropout = dropout(decoder_lstm_outputs)
 decoder_outputs = decoder_dense(decoder_dropout)
+
+# define the training model
+conditioned_model = Sequential([encoder_inputs, decoder_inputs], decoder_outputs)
