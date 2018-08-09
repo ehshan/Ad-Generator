@@ -3,6 +3,7 @@ import time
 
 from keras.models import Sequential
 from keras.layers import Input, Embedding, LSTM, Dropout, Dense
+from keras.optimizers import RMSprop
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus
@@ -91,3 +92,6 @@ decoder_outputs = decoder_dense(decoder_dropout)
 
 # define the training model
 conditioned_model = Sequential([encoder_inputs, decoder_inputs], decoder_outputs)
+
+# Define optimisation function
+rms_prop = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
