@@ -1,6 +1,7 @@
 import os.path
 import time
 
+import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Input, Embedding, LSTM, Dropout, Dense
 from keras.optimizers import RMSprop
@@ -90,8 +91,20 @@ decoder_lstm_outputs, _, _ = decoder_lstm(decoder_embedded, initial_state=encode
 decoder_dropout = dropout(decoder_lstm_outputs)
 decoder_outputs = decoder_dense(decoder_dropout)
 
-# define the training model
+# Define the training model
 conditioned_model = Sequential([encoder_inputs, decoder_inputs], decoder_outputs)
 
 # Define optimisation function
 rms_prop = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
+
+
+# Define custom evaluation metrics
+
+def perplexity(y_true, y_pred):
+    cross_entropy = K.categorical_crossentropy(y_true, y_pred)
+    perplexity = K.pow(2.0, cross_entropy)
+    return perplexity
+
+
+def cross_entropy(y_true, y_pred):
+    return K.categorical_crossentropy(y_true, y_pred)
