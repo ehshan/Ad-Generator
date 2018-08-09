@@ -108,3 +108,8 @@ def perplexity(y_true, y_pred):
 
 def cross_entropy(y_true, y_pred):
     return K.categorical_crossentropy(y_true, y_pred)
+
+
+# compile the training model
+conditioned_model.compile(optimizer=rms_prop, loss='categorical_crossentropy',
+                          metrics=['accuracy', cross_entropy, perplexity])
