@@ -162,12 +162,10 @@ def temp_sample(predictions, temperature=1.0):
 
 # generate sentence one word at a time - limiting to 10 words
 def generate_next_word(text, temp, sentence_length=10):
-    word_indices = [word_to_index(word) for word in text.split()]
+    word_indices = [word_to_index(word) for word in text.lower().split()]
     for n in range(sentence_length):
-        # prediction for all words in vocab
         prediction = primary_model.predict(x=np.array(word_indices))
-        # apply sampling parameter
-        index = temp_sample(prediction[-1], temperature=temp)
+        index = temp_sample(prediction[0, -1, :], temperature=temp)
         word_indices.append(index)
     return ' '.join(index_to_word(index) for index in word_indices)
 
