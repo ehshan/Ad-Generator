@@ -135,8 +135,8 @@ print(primary_model.summary())
 print("\nVocab size: %d" % vocab_size)
 print("Embedding size: %d" % embedding_size)
 
-batch_size = 128
-epochs = 50
+batch_size = 32
+epochs = 25
 validation_split = 0.2
 print("\nTraining in batches of: %d" % batch_size)
 print("Training epochs: %d" % epochs)
