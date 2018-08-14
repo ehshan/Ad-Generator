@@ -124,3 +124,5 @@ encoder_model = Sequential(encoder_inputs, encoder_states)
 decoder_state_input_h = Input(shape=(embedding_size,))
 decoder_state_input_c = Input(shape=(embedding_size,))
 decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
+
+final_embedded = decoder_embed(decoder_inputs)
