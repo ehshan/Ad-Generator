@@ -119,3 +119,8 @@ conditioned_model.compile(optimizer=rms_prop, loss='categorical_crossentropy',
 print("\nCreating the inference model...")
 
 encoder_model = Sequential(encoder_inputs, encoder_states)
+
+# Input states for model
+decoder_state_input_h = Input(shape=(embedding_size,))
+decoder_state_input_c = Input(shape=(embedding_size,))
+decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
