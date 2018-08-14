@@ -127,6 +127,9 @@ decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
 
 final_embedded = decoder_embed(decoder_inputs)
 
+# hidden layer will output states with prediction 
 decoder_outputs2, state_h2, state_c2 = decoder_lstm(final_embedded, initial_state=decoder_states_inputs)
 decoder_states2 = [state_h2, state_c2]
 decoder_outputs2 = decoder_dense(decoder_outputs2)
+
+decoder_model = Sequential([decoder_inputs] + decoder_states_inputs, [decoder_outputs2] + decoder_states2)
