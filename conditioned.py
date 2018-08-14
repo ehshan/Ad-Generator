@@ -66,7 +66,6 @@ encoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weigh
                           name='encoder_embedding')
 encoder_lstm = LSTM(embedding_size, return_state=True, name='encoder_lstm')
 
-
 # DECODER
 # -------
 # Define the decoder layers
@@ -76,7 +75,6 @@ decoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weigh
 decoder_lstm = LSTM(embedding_size, return_sequences=True, return_state=True, name='decoder_lstm')
 dropout = Dropout(0.2)
 decoder_dense = Dense(vocab_size, activation='softmax')
-
 
 # CONNECT LAYERS
 # --------------
@@ -113,3 +111,11 @@ def cross_entropy(y_true, y_pred):
 # compile the training model
 conditioned_model.compile(optimizer=rms_prop, loss='categorical_crossentropy',
                           metrics=['accuracy', cross_entropy, perplexity])
+
+
+# CREATE INFERENCE MODEL
+# ----------------------
+
+print("\nCreating the inference model...")
+
+encoder_model = Sequential(encoder_inputs, encoder_states)
