@@ -71,3 +71,20 @@ def vectorize_words(sentences, train_input, train_output, word_to_index):
                 train_output[i, t - 1] = word_to_index(word)
     print('End-Time: ', time.ctime(time.time()))
     return train_input, train_output
+
+
+# populate model vectors with word embedding data
+def vectorize_embed(labels, sentences, encoder_input, decoder_input, decoder_target, word_to_index):
+    print('Start-Time: ', time.ctime(time.time()))
+    # populate labels
+    for i, label in enumerate(labels):
+        for t, word in enumerate(label[:-1]):
+            encoder_input[i, t] = word_to_index(word)
+    # populate sentences
+    for i, sentence in enumerate(sentences):
+        for t, word in enumerate(sentence[:-1]):
+            decoder_input[i, t] = word_to_index(word)
+            if t > 0:
+                decoder_target[i, t - 1] = word_to_index(word)
+    print('End-Time: ', time.ctime(time.time()))
+    return encoder_input, decoder_input, decoder_target
