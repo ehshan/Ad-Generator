@@ -7,7 +7,7 @@ from keras.layers import Input, Embedding, LSTM, Dropout, Dense
 from keras.optimizers import RMSprop
 
 from clean_data import tokenize_dir, clean_tokens
-from label_corpus import tag_corpus
+from label_corpus import tag_corpus, clean_and_label
 from embed_words import train_word_model, dictionary_lookups
 
 # self path
@@ -42,6 +42,21 @@ print('Num sentences for model:', len(sentences))
 
 # add start and end tags to each sentence
 corpus = tag_corpus(sentences)
+
+
+# CREATE LABELS
+# -------------
+
+print('\nLabelling data...')
+
+tags = ['engine', 'body', 'speed', 'elegance', 'safety', 'transmission', 'fuel', 'electric', 'drive', 'reliable',
+        'dynamic' 'road', 'urban', 'car', 'fun', 'love', 'excite', 'joy', 'curious', 'pleasure', 'roadster',
+        'sophisticated', 'style', 'adventure', 'trip', 'special', 'journey', 'beautiful', 'launch', 'steering',
+        'travel', 'design', 'future', 'advanced', 'driving', 'tech', 'imagine', 'control', 'amazing', 'wheel',
+        'impressive', 'distinctive', 'diesel', 'petrol', 'celebrating', 'perfect', 'balance', 'interior', 'versatile',
+        'practical']
+
+corpus, labels = clean_and_label(corpus, tags)
 
 # GENERATE EMBEDDINGS
 # ---------------
