@@ -8,7 +8,7 @@ from keras.optimizers import RMSprop
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus
-from embed_words import train_word_model
+from embed_words import train_word_model, dictionary_lookups
 
 # self path
 path = os.getcwd()
@@ -54,6 +54,9 @@ word_model = train_word_model(corpus, 'word_model')
 embed_weights = word_model.wv.syn0
 # get the vocab size and embedding shape for model
 vocab_size, embedding_size = embed_weights.shape
+
+# get the dictionary lookup functions
+word_to_index, index_to_word = dictionary_lookups(word_model)
 
 # DEFINE MODEL LAYERS
 # ----------------------
