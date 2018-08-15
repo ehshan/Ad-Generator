@@ -37,9 +37,6 @@ sentences, max_sentence, max_sentence_len = clean_tokens(corpus)
 
 print("max: %d " % max_sentence_len)
 
-print('Num sentences in original corpus:', len(corpus))
-print('Num sentences for model:', len(sentences))
-
 # add start and end tags to each sentence
 corpus = tag_corpus(sentences)
 
@@ -56,7 +53,17 @@ tags = ['engine', 'body', 'speed', 'elegance', 'safety', 'transmission', 'fuel',
         'impressive', 'distinctive', 'diesel', 'petrol', 'celebrating', 'perfect', 'balance', 'interior', 'versatile',
         'practical']
 
+
 corpus, labels = clean_and_label(corpus, tags)
+max_sentence_len = len(max(corpus, key=len))
+max_label_len = len(max(labels, key=len))
+
+# Print data sizes
+print("\nLabel Size: %d" % len(labels))
+print("Max label length: %d" % max_label_len)
+print("Corpus Size: %d" % len(corpus))
+print("Max sentence length: %d" % max_sentence_len)
+
 
 # GENERATE EMBEDDINGS
 # ---------------
