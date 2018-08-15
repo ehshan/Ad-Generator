@@ -74,7 +74,7 @@ def vectorize_words(sentences, train_input, train_output, word_to_index):
 
 
 # populate model vectors with word embedding data
-def vectorize_embed(labels, sentences, encoder_input, decoder_input, decoder_target, word_to_index):
+def vectorize_conditioned(labels, sentences, encoder_input, decoder_input, decoder_target, word_to_index):
     print('Start-Time: ', time.ctime(time.time()))
     # populate labels
     for i, label in enumerate(labels):
