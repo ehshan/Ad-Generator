@@ -9,7 +9,7 @@ from keras.optimizers import RMSprop
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus, clean_and_label
-from embed_words import train_word_model, dictionary_lookups
+from embed_words import train_word_model, dictionary_lookups, vectorize_conditioned
 
 # self path
 path = os.getcwd()
@@ -94,6 +94,10 @@ encoder_input = np.zeros([len(labels), max_label_len], dtype=np.int32)
 decoder_input = np.zeros([len(corpus), max_sentence_len], dtype=np.int32)
 # decoder output shape (no sentences in corpus, max sentence length, 1)
 decoder_output = np.zeros([len(corpus), max_sentence_len, 1], dtype=np.int32)
+
+print('\nEncoder input shape: %s ' % str(encoder_input.shape))
+print('Decoder input shape: %s ' % str(decoder_input.shape))
+print('Decoder output shape: %s ' % str(decoder_output.shape))
 
 # DEFINE MODEL LAYERS
 # ----------------------
