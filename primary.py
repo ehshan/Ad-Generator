@@ -74,7 +74,7 @@ train_input = np.zeros([len(sentences), max_sentence_len], dtype=np.int32)
 train_output = np.zeros([len(sentences), max_sentence_len, 1], dtype=np.int32)
 
 # populate model vectors with word embedding data
-train_input, train_output = vectorize_words(sentences, train_input, train_output, index_to_word)
+train_input, train_output = vectorize_words(sentences, train_input, train_output, word_to_index)
 
 print('\ntrain_input shape:', train_input.shape)
 print('train_output shape:', train_output.shape)
