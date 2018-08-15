@@ -95,6 +95,11 @@ decoder_input = np.zeros([len(corpus), max_sentence_len], dtype=np.int32)
 # decoder output shape (no sentences in corpus, max sentence length, 1)
 decoder_output = np.zeros([len(corpus), max_sentence_len, 1], dtype=np.int32)
 
+encoder_input_data, decoder_input_data, decoder_target_data = vectorize_conditioned(labels, corpus, encoder_input,
+                                                                                    decoder_input, decoder_output,
+                                                                                    word_to_index)
+
+
 print('\nEncoder input shape: %s ' % str(encoder_input.shape))
 print('Decoder input shape: %s ' % str(decoder_input.shape))
 print('Decoder output shape: %s ' % str(decoder_output.shape))
