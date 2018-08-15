@@ -1,5 +1,6 @@
 import os.path
 import time
+import numpy as np
 
 import keras.backend as K
 from keras.models import Sequential
@@ -79,6 +80,20 @@ vocab_size, embedding_size = embed_weights.shape
 
 # get the dictionary lookup functions
 word_to_index, index_to_word = dictionary_lookups(word_model)
+
+
+# CREATE WORD VECTORS FOR MODEL INPUT
+# -----------------------------------
+
+# Encoder Model
+# encoder input shape (no sentences in labels, max-label-length)
+encoder_input = np.zeros([len(labels), max_label_len], dtype=np.int32)
+
+# Decoder Model
+# decoder input shape (no sentences in corpus, max sentence length)
+decoder_input = np.zeros([len(corpus), max_sentence_len], dtype=np.int32)
+# decoder output shape (no sentences in corpus, max sentence length, 1)
+decoder_output = np.zeros([len(corpus), max_sentence_len, 1], dtype=np.int32)
 
 # DEFINE MODEL LAYERS
 # ----------------------
