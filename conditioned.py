@@ -1,6 +1,7 @@
 import os.path
 import time
 import numpy as np
+from random import shuffle, sample, randint
 
 import keras.backend as K
 from keras.models import Sequential
@@ -41,7 +42,6 @@ print("max: %d " % max_sentence_len)
 # add start and end tags to each sentence
 corpus = tag_corpus(sentences)
 
-
 # CREATE LABELS
 # -------------
 
@@ -54,7 +54,6 @@ tags = ['engine', 'body', 'speed', 'elegance', 'safety', 'transmission', 'fuel',
         'impressive', 'distinctive', 'diesel', 'petrol', 'celebrating', 'perfect', 'balance', 'interior', 'versatile',
         'practical']
 
-
 corpus, labels = clean_and_label(corpus, tags)
 max_sentence_len = len(max(corpus, key=len))
 max_label_len = len(max(labels, key=len))
@@ -64,7 +63,6 @@ print("\nLabel Size: %d" % len(labels))
 print("Max label length: %d" % max_label_len)
 print("Corpus Size: %d" % len(corpus))
 print("Max sentence length: %d" % max_sentence_len)
-
 
 # GENERATE EMBEDDINGS
 # ---------------
@@ -80,7 +78,6 @@ vocab_size, embedding_size = embed_weights.shape
 
 # get the dictionary lookup functions
 word_to_index, index_to_word = dictionary_lookups(word_model)
-
 
 # CREATE WORD VECTORS FOR MODEL INPUT
 # -----------------------------------
@@ -98,7 +95,6 @@ decoder_output = np.zeros([len(corpus), max_sentence_len, 1], dtype=np.int32)
 encoder_input_data, decoder_input_data, decoder_target_data = vectorize_conditioned(labels, corpus, encoder_input,
                                                                                     decoder_input, decoder_output,
                                                                                     word_to_index)
-
 
 print('\nEncoder input shape: %s ' % str(encoder_input.shape))
 print('Decoder input shape: %s ' % str(decoder_input.shape))
@@ -161,7 +157,6 @@ def cross_entropy(y_true, y_pred):
 conditioned_model.compile(optimizer=rms_prop, loss='categorical_crossentropy',
                           metrics=['accuracy', cross_entropy, perplexity])
 
-
 # CREATE INFERENCE MODEL
 # ----------------------
 
@@ -182,3 +177,23 @@ decoder_states2 = [state_h2, state_c2]
 decoder_outputs2 = decoder_dense(decoder_outputs2)
 
 decoder_model = Sequential([decoder_inputs] + decoder_states_inputs, [decoder_outputs2] + decoder_states2)
+
+# CREATE TEST DATA AND EVALUATE MODEL
+# -----------------------------------
+
+print("\nCreating test data & evaluating model...")
+
+
+def make_test_set(tags, num):
+    all_labels = []
+    for i in range(num):
+        len = randint(2, 5)
+        label = sample(tags, len)
+        shuffle(label)
+        label[:0] = ['<START>']
+        label.append('<END>')
+        all_labels.append(label)
+    return all_labels
+
+
+test_labels = make_test_set(tags, 100)
