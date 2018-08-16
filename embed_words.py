@@ -88,3 +88,12 @@ def vectorize_conditioned(labels, sentences, encoder_input, decoder_input, decod
                 decoder_target[i, t - 1] = word_to_index(word)
     print('End-Time: ', time.ctime(time.time()))
     return encoder_input, decoder_input, decoder_target
+
+
+# vectorize labels for model testing
+def vectorize_test_labels(labels, encoder_input, word_to_index):
+    for i, label in enumerate(labels):
+        for t, word in enumerate(label[:-1]):
+            encoder_input[i, t] = word_to_index(word)
+
+    return encoder_input
