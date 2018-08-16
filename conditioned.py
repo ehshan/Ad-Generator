@@ -10,7 +10,7 @@ from keras.optimizers import RMSprop
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus, clean_and_label
-from embed_words import train_word_model, dictionary_lookups, vectorize_conditioned
+from embed_words import train_word_model, dictionary_lookups, vectorize_conditioned, vectorize_test_labels
 
 # self path
 path = os.getcwd()
@@ -203,3 +203,6 @@ max_test_label_len = len(max(test_labels, key=len))
 
 # define the shape of the encoded vector
 encoder_vector = np.zeros([len(test_labels), max_test_label_len], dtype=np.int32)
+
+# populate the vector with embeddings for label data
+encoder_test_input = vectorize_test_labels(test_labels, encoder_vector, word_to_index)
