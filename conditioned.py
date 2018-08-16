@@ -207,7 +207,6 @@ encoder_vector = np.zeros([len(test_labels), max_test_label_len], dtype=np.int32
 # populate the vector with embeddings for label data
 encoder_test_input = vectorize_test_labels(test_labels, encoder_vector, word_to_index)
 
-
 # TRAINING SETUP
 # --------------
 print("\nVocab size: %d" % vocab_size)
@@ -218,3 +217,12 @@ epochs = 25
 validation_split = 0.2
 print("\nTraining in batches of: %d" % batch_size)
 print("Training epochs: %d" % epochs)
+
+# TRAIN MODEL
+# -----------
+hist = conditioned_model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
+                             batch_size=batch_size,
+                             epochs=epochs,
+                             shuffle='batch',  # check param
+                             verbose=1,
+                             validation_split=validation_split)
