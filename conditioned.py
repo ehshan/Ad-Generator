@@ -196,4 +196,10 @@ def make_test_set(tags, num):
     return all_labels
 
 
-test_labels = make_test_set(tags, 100)
+test_labels = make_test_set(tags, 50)
+
+# assign the max length for vectorization
+max_test_label_len = len(max(test_labels, key=len))
+
+# define the shape of the encoded vector
+encoder_vector = np.zeros([len(test_labels), max_test_label_len], dtype=np.int32)
