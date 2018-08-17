@@ -7,6 +7,7 @@ import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Input, Embedding, LSTM, Dropout, Dense
 from keras.optimizers import RMSprop
+from keras.callbacks import History, CSVLogger
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus, clean_and_label
@@ -218,6 +219,10 @@ validation_split = 0.2
 print("\nTraining in batches of: %d" % batch_size)
 print("Training epochs: %d" % epochs)
 
+history = History()
+
+csv_logger = CSVLogger(path + '/History/Conditioned/Logs/' + version_name + '_log.log')
+
 # TRAIN MODEL
 # -----------
 hist = conditioned_model.fit([encoder_input_data, decoder_input_data], decoder_target_data,
@@ -225,4 +230,5 @@ hist = conditioned_model.fit([encoder_input_data, decoder_input_data], decoder_t
                              epochs=epochs,
                              shuffle='batch',  # check param
                              verbose=1,
-                             validation_split=validation_split)
+                             validation_split=validation_split,
+                             callbacks=[history, csv_logger])
