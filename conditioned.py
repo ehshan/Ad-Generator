@@ -9,7 +9,7 @@ import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Input, Embedding, LSTM, Dropout, Dense
 from keras.optimizers import RMSprop
-from keras.callbacks import History, CSVLogger, LambdaCallback
+from keras.callbacks import History, CSVLogger, LambdaCallback, ModelCheckpoint
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus, clean_and_label
@@ -310,9 +310,17 @@ def save_results(epoch, _):
 
 results_callback = LambdaCallback(on_epoch_end=save_results)
 
+model_check = ModelCheckpoint(path + '/Models/' + version_name + '_.{epoch:02d}.hdf5',
+                              monitor='val_perplexity',
+                              verbose=1,
+                              save_best_only=False,
+                              save_weights_only=False,
+                              mode='auto',
+                              period=1)
+
 history = History()
 
-csv_logger = CSVLogger(path + '/History/Conditioned/Logs/' + version_name + '_log.log')
+csv_logger = CSVLogger(path + '/Logs/' + version_name + '.log')
 
 # TRAIN MODEL
 # -----------
