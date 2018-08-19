@@ -1,5 +1,6 @@
 import os.path
 import time
+import csv
 import numpy as np
 from random import shuffle, sample, randint
 from nltk import word_tokenize
@@ -277,6 +278,34 @@ def generate_sequence(input_seq, temp_value):
         previous_word = current_word
 
     return sentence
+
+
+# function to save output on each epoch
+def save_results(epoch, _):
+    # print results to file
+    print("\nSaving greedy results to file...")
+    print('Start-Time: ', time.ctime(time.time()))
+    with open(path + '/Output/Conditioned/CSV/' + version_name + '_greedy_ep_' + str(epoch) + '.csv', 'w')as gcf:
+
+        wrg = csv.writer(gcf, dialect='excel', lineterminator='\n')
+
+        for i, label in enumerate(test_labels):
+            greedy_output = generate_sequence(encoder_test_input[i:i + 1], 0)
+            wrg.writerow([greedy_output])
+
+    print('End-Time: ', time.ctime(time.time()))
+
+    print("\nSaving random sampling results to file...")
+    print('Start-Time: ', time.ctime(time.time()))
+    with open(path + '/Output/Conditioned/CSV/' + version_name + '_sample_ep_' + str(epoch) + '.csv', 'w')as tcf:
+
+        wrt = csv.writer(tcf, dialect='excel', lineterminator='\n')
+
+        for i, label in enumerate(test_labels):
+            temp_output = generate_sequence(encoder_test_input[i:i + 1], 0.6)
+            wrt.writerow([temp_output])
+
+    print('End-Time: ', time.ctime(time.time()))
 
 
 history = History()
