@@ -2,6 +2,7 @@ import os.path
 import time
 import numpy as np
 from random import shuffle, sample, randint
+from nltk import word_tokenize
 
 import keras.backend as K
 from keras.models import Sequential
@@ -218,6 +219,52 @@ epochs = 25
 validation_split = 0.2
 print("\nTraining in batches of: %d" % batch_size)
 print("Training epochs: %d" % epochs)
+
+
+# GENERATOR FUNCTIONS
+
+# Function to generate sequences
+def generate_sequence(input_seq, temp_value):
+    # the context vector from encoder
+    states = encoder_model.predict(input_seq)
+    # empty array for first target value
+    target_seq = np.zeros((1, 1))
+    # Populate the first character of target sequence with the start character.
+    target_seq[0, 0] = word_to_index('<START>')
+
+    previous_word = '<START>'
+
+    terminate = False
+    sentence = ''
+    while not terminate:
+        # predicted word using previous word and state
+        output_tokens, h, c = decoder_model.predict(
+            [target_seq] + states)
+
+        # generate a word with sampling
+        predicted_word_index = argmax(output_tokens[0, -1, :], temperature=temp_value)
+        current_word = index_to_word(predicted_word_index)
+        # append to sentence so far
+        sentence += ' ' + current_word
+
+        # Sequence generation terminates if <END> or LINK token predicted
+        # Or the same word consecutively predicted
+        if (current_word == '<END>' or current_word == 'LINK' or previous_word == current_word or
+                len(word_tokenize(sentence)) > max_sentence_len):
+            terminate = True
+
+        # Assign the current word to variable fot input at next time-step
+        target_seq = np.zeros((1, 1))
+        target_seq[0, 0] = predicted_word_index
+
+        # Update states for next step
+        states = [h, c]
+
+        # temp assignment to keep track of sentence
+        previous_word = current_word
+
+    return sentence
+
 
 history = History()
 
