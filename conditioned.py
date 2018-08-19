@@ -9,7 +9,7 @@ import keras.backend as K
 from keras.models import Sequential
 from keras.layers import Input, Embedding, LSTM, Dropout, Dense
 from keras.optimizers import RMSprop
-from keras.callbacks import History, CSVLogger
+from keras.callbacks import History, CSVLogger, LambdaCallback
 
 from clean_data import tokenize_dir, clean_tokens
 from label_corpus import tag_corpus, clean_and_label
@@ -307,6 +307,8 @@ def save_results(epoch, _):
 
     print('End-Time: ', time.ctime(time.time()))
 
+
+results_callback = LambdaCallback(on_epoch_end=save_results)
 
 history = History()
 
