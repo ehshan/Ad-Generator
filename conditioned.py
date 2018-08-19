@@ -330,4 +330,4 @@ hist = conditioned_model.fit([encoder_input_data, decoder_input_data], decoder_t
                              shuffle='batch',  # check param
                              verbose=1,
                              validation_split=validation_split,
-                             callbacks=[history, csv_logger])
+                             callbacks=[history, csv_logger, results_callback, model_check])
