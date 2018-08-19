@@ -223,6 +223,19 @@ print("Training epochs: %d" % epochs)
 
 # GENERATOR FUNCTIONS
 
+# apply temperature to each model output
+def temp_sample(predictions, temperature=1.0):
+    # print(len(predictions))
+    if temperature <= 0:
+        return np.argmax(predictions)
+    predictions = np.asarray(predictions).astype('float64')
+    predictions = np.log(predictions) / temperature
+    expected_predictions = np.exp(predictions)
+    predictions = expected_predictions / np.sum(expected_predictions)
+    probability = np.random.multinomial(1, predictions, 1)
+    return np.argmax(probability)
+
+
 # Function to generate sequences
 def generate_sequence(input_seq, temp_value):
     # the context vector from encoder
@@ -242,7 +255,7 @@ def generate_sequence(input_seq, temp_value):
             [target_seq] + states)
 
         # generate a word with sampling
-        predicted_word_index = argmax(output_tokens[0, -1, :], temperature=temp_value)
+        predicted_word_index = temp_sample(output_tokens[0, -1, :], temperature=temp_value)
         current_word = index_to_word(predicted_word_index)
         # append to sentence so far
         sentence += ' ' + current_word
