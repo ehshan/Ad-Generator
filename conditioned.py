@@ -1,6 +1,7 @@
 import os.path
 import time
 import csv
+import pickle
 import numpy as np
 from random import shuffle, sample, randint
 from nltk import word_tokenize
@@ -331,3 +332,8 @@ hist = conditioned_model.fit([encoder_input_data, decoder_input_data], decoder_t
                              verbose=1,
                              validation_split=validation_split,
                              callbacks=[history, csv_logger, results_callback, model_check])
+
+print('\nTraining Finish Time: ', time.ctime(time.time()))
+
+with open(path + '/Logs/' + version_name + '_train_history.pkl', 'wb') as file:
+    pickle.dump(hist.history, file)
