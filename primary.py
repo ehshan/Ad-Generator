@@ -221,11 +221,11 @@ print("\nSaving trained model...")
 primary_model.save(path + '/Models/' + version_name + '.h5')
 
 print("\nSaving model weights...")
-primary_model.save_weights(path + '/Models/Primary/' + version_name + '_weights.h5')
+primary_model.save_weights(path + '/Models/' + version_name + '_weights.h5')
 
 print("\nSaving model to JSON...")
 model_json_string = primary_model.to_json()
-with open(path + '/Models/Primary/' + version_name + '.json', "w") as f_j:
+with open(path + '/Models/' + version_name + '.json', "w") as f_j:
     json.dump(json.loads(model_json_string), f_j, indent=4)
 
 print("\nAll done!")
