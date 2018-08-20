@@ -287,7 +287,7 @@ def save_results(epoch, _):
     # print results to file
     print("\nSaving greedy results to file...")
     print('Start-Time: ', time.ctime(time.time()))
-    with open(path + '/Output/Conditioned/CSV/' + version_name + '_greedy_ep_' + str(epoch) + '.csv', 'w')as gcf:
+    with open(path + '/Output/' + version_name + '_greedy_ep_' + str(epoch) + '.csv', 'w')as gcf:
 
         wrg = csv.writer(gcf, dialect='excel', lineterminator='\n')
 
@@ -299,7 +299,7 @@ def save_results(epoch, _):
 
     print("\nSaving random sampling results to file...")
     print('Start-Time: ', time.ctime(time.time()))
-    with open(path + '/Output/Conditioned/CSV/' + version_name + '_sample_ep_' + str(epoch) + '.csv', 'w')as tcf:
+    with open(path + '/Output/' + version_name + '_sample_ep_' + str(epoch) + '.csv', 'w')as tcf:
 
         wrt = csv.writer(tcf, dialect='excel', lineterminator='\n')
 
