@@ -7,7 +7,7 @@ import json
 import keras.backend as K
 
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Input, LSTM, Embedding, Dropout
+from keras.layers import Dense, Activation, Input, LSTM, Embedding, Dropout, TimeDistributed
 from keras.optimizers import RMSprop
 from keras.callbacks import LambdaCallback, CSVLogger, History, ModelCheckpoint
 
@@ -90,7 +90,7 @@ model_lstm_1 = LSTM(units=embedding_size, return_sequences=True, return_state=Fa
 model_dropout_1 = Dropout(0.2)
 model_lstm_2 = LSTM(units=embedding_size, return_sequences=False, return_state=False)
 model_dropout_2 = Dropout(0.2)
-model_dense = Dense(units=vocab_size)
+model_dense = TimeDistributed(Dense(units=vocab_size))
 model_activation = Activation('softmax')
 # Connect layers
 embedded = model_embed(model_input)
