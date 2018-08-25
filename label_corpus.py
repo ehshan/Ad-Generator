@@ -36,9 +36,9 @@ def all_tags(list, word_model):
 
 
 # label the corpus
-def label_corpus(sentences, keywords):
+def label_corpus(sentences, keywords, word_model):
     print("\nLabeling corpus...")
-    all_keywords = all_tags(keywords)
+    all_keywords = all_tags(keywords, word_model)
     all_labels = []
     # each sentence in the set
 
@@ -79,9 +79,9 @@ def check_keywords_present(sentence, all_keywords):
 
 
 # label the corpus
-def clean_and_label(sentences, keywords):
+def clean_and_label(sentences, keywords, word_model):
     print("\nLabeling corpus...")
-    all_keywords = all_tags(keywords)
+    all_keywords = all_tags(keywords, word_model)
     all_labels = []
     keyword_corpus = []
     # each sentence in the set
