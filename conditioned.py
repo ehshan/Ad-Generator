@@ -7,9 +7,11 @@ import numpy as np
 from random import shuffle, sample, randint
 from nltk import word_tokenize
 
+from gensim.models import FastText
+
 import keras.backend as K
-from keras.models import Sequential
-from keras.layers import Input, Embedding, LSTM, Dropout, Dense
+from keras.models import Model
+from keras.layers import Input, Embedding, LSTM, Dense, TimeDistributed
 from keras.optimizers import RMSprop
 from keras.callbacks import History, CSVLogger, LambdaCallback, ModelCheckpoint
 
@@ -47,6 +49,23 @@ print("max: %d " % max_sentence_len)
 # add start and end tags to each sentence
 corpus = tag_corpus(sentences)
 
+# GENERATE EMBEDDINGS
+# ---------------
+
+print('\nCreating word embeddings...')
+# train and save the embedding model
+# word_model = train_word_model(corpus, 'word_model')
+
+word_model = FastText.load("../Ad-Generator/Embeddings/word_model.model")
+
+# get the initial model weight
+embed_weights = word_model.wv.syn0
+# get the vocab size and embedding shape for model
+vocab_size, embedding_size = embed_weights.shape
+
+# get the dictionary lookup functions
+word_to_index, index_to_word = dictionary_lookups(word_model)
+
 # CREATE LABELS
 # -------------
 
@@ -59,7 +78,7 @@ tags = ['engine', 'body', 'speed', 'elegance', 'safety', 'transmission', 'fuel',
         'impressive', 'distinctive', 'diesel', 'petrol', 'celebrating', 'perfect', 'balance', 'interior', 'versatile',
         'practical']
 
-corpus, labels = clean_and_label(corpus, tags)
+corpus, labels = clean_and_label(corpus, tags, word_model)
 max_sentence_len = len(max(corpus, key=len))
 max_label_len = len(max(labels, key=len))
 
@@ -68,21 +87,6 @@ print("\nLabel Size: %d" % len(labels))
 print("Max label length: %d" % max_label_len)
 print("Corpus Size: %d" % len(corpus))
 print("Max sentence length: %d" % max_sentence_len)
-
-# GENERATE EMBEDDINGS
-# ---------------
-
-print('\nCreating word embeddings...')
-# train and save the embedding model
-word_model = train_word_model(corpus, 'word_model')
-
-# get the initial model weight
-embed_weights = word_model.wv.syn0
-# get the vocab size and embedding shape for model
-vocab_size, embedding_size = embed_weights.shape
-
-# get the dictionary lookup functions
-word_to_index, index_to_word = dictionary_lookups(word_model)
 
 # CREATE WORD VECTORS FOR MODEL INPUT
 # -----------------------------------
@@ -112,19 +116,19 @@ print('Decoder output shape: %s ' % str(decoder_output.shape))
 # -------
 # Define the encoder layers
 encoder_inputs = Input(shape=(None,), name='label_input')
-encoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights], trainable=False,
-                          name='encoder_embedding')
+# STANDARD
+encoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights],
+                          trainable=False, name='encoder_embedding')
 encoder_lstm = LSTM(embedding_size, return_state=True, name='encoder_lstm')
 
 # DECODER
 # -------
 # Define the decoder layers
 decoder_inputs = Input(shape=(None,), name='sentence_input')
-decoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights], trainable=False,
-                          name='decoder_embedding')
+decoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights],
+                          trainable=False, name='decoder_embedding')
 decoder_lstm = LSTM(embedding_size, return_sequences=True, return_state=True, name='decoder_lstm')
-dropout = Dropout(0.2)
-decoder_dense = Dense(vocab_size, activation='softmax')
+decoder_dense = TimeDistributed(Dense(vocab_size, activation='softmax'))
 
 # CONNECT LAYERS
 # --------------
@@ -136,26 +140,23 @@ encoder_states = [state_h, state_c]
 # Connect the decoder layers
 decoder_embedded = decoder_embed(decoder_inputs)
 decoder_lstm_outputs, _, _ = decoder_lstm(decoder_embedded, initial_state=encoder_states)
-decoder_dropout = dropout(decoder_lstm_outputs)
-decoder_outputs = decoder_dense(decoder_dropout)
+decoder_outputs = decoder_dense(decoder_lstm_outputs)
 
 # Define the training model
-conditioned_model = Sequential([encoder_inputs, decoder_inputs], decoder_outputs)
+conditioned_model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
 
-# Define optimisation function
+# Define optimizer
 rms_prop = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
 
 
-# Define custom evaluation metrics
-
 def perplexity(y_true, y_pred):
-    cross_entropy = K.categorical_crossentropy(y_true, y_pred)
+    cross_entropy = K.sparse_categorical_crossentropy(y_true, y_pred)
     perplexity = K.pow(2.0, cross_entropy)
     return perplexity
 
 
 def cross_entropy(y_true, y_pred):
-    return K.categorical_crossentropy(y_true, y_pred)
+    return K.sparse_categorical_crossentropy(y_true, y_pred)
 
 
 # compile the training model
@@ -167,7 +168,7 @@ conditioned_model.compile(optimizer=rms_prop, loss='categorical_crossentropy',
 
 print("\nCreating the inference model...")
 
-encoder_model = Sequential(encoder_inputs, encoder_states)
+encoder_model = Model(encoder_inputs, encoder_states)
 
 # Input states for model
 decoder_state_input_h = Input(shape=(embedding_size,))
@@ -176,12 +177,12 @@ decoder_states_inputs = [decoder_state_input_h, decoder_state_input_c]
 
 final_embedded = decoder_embed(decoder_inputs)
 
-# hidden layer will output states with prediction 
+# hidden layer will output states with prediction
 decoder_outputs2, state_h2, state_c2 = decoder_lstm(final_embedded, initial_state=decoder_states_inputs)
 decoder_states2 = [state_h2, state_c2]
 decoder_outputs2 = decoder_dense(decoder_outputs2)
 
-decoder_model = Sequential([decoder_inputs] + decoder_states_inputs, [decoder_outputs2] + decoder_states2)
+decoder_model = Model([decoder_inputs] + decoder_states_inputs, [decoder_outputs2] + decoder_states2)
 
 # CREATE TEST DATA AND EVALUATE MODEL
 # -----------------------------------
