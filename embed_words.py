@@ -62,6 +62,7 @@ def dictionary_lookups(model):
 
 # populate model vectors with word embedding data
 def vectorize_words(sentences, train_input, train_output, word_to_index):
+    print('\nVectorising corpus...')
     print('Start-Time: ', time.ctime(time.time()))
     # populate vectors
     for i, sentence in enumerate(sentences):
@@ -75,6 +76,7 @@ def vectorize_words(sentences, train_input, train_output, word_to_index):
 
 # populate model vectors with word embedding data
 def vectorize_conditioned(labels, sentences, encoder_input, decoder_input, decoder_target, word_to_index):
+    print('\nVectorising corpus...')
     print('Start-Time: ', time.ctime(time.time()))
     # populate labels
     for i, label in enumerate(labels):
