@@ -6,7 +6,7 @@ import pickle
 import json
 import keras.backend as K
 
-from keras.models import Sequential
+from keras.models import Model
 from keras.layers import Dense, Activation, Input, LSTM, Embedding, Dropout, TimeDistributed
 from keras.optimizers import RMSprop
 from keras.callbacks import LambdaCallback, CSVLogger, History, ModelCheckpoint
@@ -103,7 +103,7 @@ model_output = model_activation(dense_output)
 
 
 # Define the model
-primary_model = Sequential(model_input, model_output)
+primary_model = Model(model_input, model_output)
 
 # Define optimizer
 rms_prop = RMSprop(lr=0.001, rho=0.9, epsilon=None, decay=0.0)
