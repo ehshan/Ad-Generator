@@ -6,6 +6,8 @@ import pickle
 import json
 import keras.backend as K
 
+from gensim.models import FastText
+
 from keras.models import Model
 from keras.layers import Dense, Activation, Input, LSTM, Embedding, Dropout, TimeDistributed
 from keras.optimizers import RMSprop
@@ -34,6 +36,8 @@ print('\nLoading data...')
 
 print('Start-Time: ', time.ctime(time.time()))
 corpus = tokenize_dir(data_path, extension)
+# with open('../Ad-Generator/Data/clean-tokens', 'rb') as fp:
+#     corpus = pickle.load(fp)
 print('End-Time: ', time.ctime(time.time()))
 
 # clean tokenize corpus
@@ -53,6 +57,7 @@ print('Num sentences for model:', len(sentences))
 print('\nCreating word embeddings...')
 # train and save the embedding model
 word_model = train_word_model(corpus, 'word_model')
+# word_model = FastText.load("../Ad-Generator/Embeddings/word_model.model")
 
 # get the initial model weight
 embed_weights = word_model.wv.syn0
@@ -88,7 +93,7 @@ model_input = Input(shape=(None,))
 model_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights])
 model_lstm_1 = LSTM(units=embedding_size, return_sequences=True, return_state=False)
 model_dropout_1 = Dropout(0.2)
-model_lstm_2 = LSTM(units=embedding_size, return_sequences=False, return_state=False)
+model_lstm_2 = LSTM(units=embedding_size, return_sequences=True, return_state=False)
 model_dropout_2 = Dropout(0.2)
 model_dense = TimeDistributed(Dense(units=vocab_size))
 model_activation = Activation('softmax')
