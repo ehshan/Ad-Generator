@@ -39,6 +39,8 @@ print('\nLoading data...')
 
 print('Start-Time: ', time.ctime(time.time()))
 corpus = tokenize_dir(data_path, extension)
+# with open('../Ad-Generator/Data/clean-tokens', 'rb') as fp:
+#     corpus = pickle.load(fp)
 print('End-Time: ', time.ctime(time.time()))
 
 # clean tokenize corpus
@@ -54,9 +56,8 @@ corpus = tag_corpus(sentences)
 
 print('\nCreating word embeddings...')
 # train and save the embedding model
-# word_model = train_word_model(corpus, 'word_model')
-
-word_model = FastText.load("../Ad-Generator/Embeddings/word_model.model")
+word_model = train_word_model(corpus, 'word_model')
+# word_model = FastText.load("../Ad-Generator/Embeddings/word_model.model")
 
 # get the initial model weight
 embed_weights = word_model.wv.syn0
@@ -116,7 +117,6 @@ print('Decoder output shape: %s ' % str(decoder_output.shape))
 # -------
 # Define the encoder layers
 encoder_inputs = Input(shape=(None,), name='label_input')
-# STANDARD
 encoder_embed = Embedding(input_dim=vocab_size, output_dim=embedding_size, weights=[embed_weights],
                           trainable=False, name='encoder_embedding')
 encoder_lstm = LSTM(embedding_size, return_state=True, name='encoder_lstm')
@@ -160,7 +160,7 @@ def cross_entropy(y_true, y_pred):
 
 
 # compile the training model
-conditioned_model.compile(optimizer=rms_prop, loss='categorical_crossentropy',
+conditioned_model.compile(optimizer=rms_prop, loss='sparse_categorical_crossentropy',
                           metrics=['accuracy', cross_entropy, perplexity])
 
 # CREATE INFERENCE MODEL
