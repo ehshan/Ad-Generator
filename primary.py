@@ -6,8 +6,6 @@ import pickle
 import json
 import keras.backend as K
 
-from gensim.models import FastText
-
 from keras.models import Model
 from keras.layers import Dense, Activation, Input, LSTM, Embedding, Dropout, TimeDistributed
 from keras.optimizers import RMSprop
