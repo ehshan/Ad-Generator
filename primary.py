@@ -18,7 +18,8 @@ from embed_words import train_word_model, dictionary_lookups, vectorize_words
 path = os.getcwd()
 
 # define data file and file extension
-data_path = os.path.abspath(os.path.join(os.getcwd(), '../../Data/Twitter-Data/Clean'))
+# replace with location of data-set
+data_path = ''
 extension = 'csv'
 
 # for saving
@@ -34,8 +35,6 @@ print('\nLoading data...')
 
 print('Start-Time: ', time.ctime(time.time()))
 corpus = tokenize_dir(data_path, extension)
-# with open('../Ad-Generator/Data/clean-tokens', 'rb') as fp:
-#     corpus = pickle.load(fp)
 print('End-Time: ', time.ctime(time.time()))
 
 # clean tokenize corpus
@@ -55,7 +54,6 @@ print('Num sentences for model:', len(sentences))
 print('\nCreating word embeddings...')
 # train and save the embedding model
 word_model = train_word_model(corpus, 'word_model')
-# word_model = FastText.load("../Ad-Generator/Embeddings/word_model.model")
 
 # get the initial model weight
 embed_weights = word_model.wv.syn0
