@@ -1,10 +1,11 @@
 # Ad Generator
 ***
 
-This repo contains the training scripts for an Neural Language Model capable of generating text ads.
-There are 2 models, a multi-layer LSTM (*primary.py*), and a Sequence-to-Sequence model (*conditioned.py*). The models were built using  Keras with a TensorFlow backend. 
+This repo contains the training scripts for experiments with Neural Language Model capable of generating text ads.
+There are 2 models, a multi-layer LSTM (*primary.py*), and a Sequence-to-Sequence model (*conditioned.py*). 
+Both models were built using  Keras with a TensorFlow backend. 
 
-The full training corpus and a run-able version of the model are available upon request. 
+The full training corpus and run-able versions of the models are available upon request. 
 
 ## Authors
 
